@@ -24,20 +24,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  http: ^1.2.2
-  provider: ^6.1.2
-  dartz: ^0.10.1
-  equatable: ^2.0.5
-  google_fonts: ^6.2.1
-  flutter_rating_bar: ^4.0.1
-  cached_network_image: ^3.4.1
+
   get_it: ^7.7.0
-  sqflite: ^2.3.3+1
-  path_provider: ^2.1.4
+
+  about:
+    path: about
+
+  core:
+    path: core
+  search:
+    path: search
 
 dev_dependencies:
-  mockito: ^5.0.8
-  build_runner: ^2.0.4
+
   flutter_test:
     sdk: flutter
 
