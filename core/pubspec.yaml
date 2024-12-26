@@ -21,8 +21,13 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_rating_bar: ^4.0.1
   cached_network_image: ^3.4.1
-  sqflite: ^2.3.3+1
+#  sqflite: ^2.3.3+1
+  sqflite_sqlcipher: ^2.1.0
   path_provider: ^2.1.4
+  encrypt: ^5.0.1
+  firebase_core: ^2.27.1
+  firebase_crashlytics: ^3.4.19
+  firebase_analytics: ^10.8.10
 
 dev_dependencies:
   flutter_test:

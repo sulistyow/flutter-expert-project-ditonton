@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:core/data/models/movie_table.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:core/utils/encrypt.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 import '../../models/tv_table.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
+
   DatabaseHelper._instance() {
     _databaseHelper = this;
   }
@@ -29,7 +31,12 @@ class DatabaseHelper {
     final path = await getDatabasesPath();
     final databasePath = '$path/ditonton.db';
 
-    var db = await openDatabase(databasePath, version: 1, onCreate: _onCreate);
+    var db = await openDatabase(
+      databasePath,
+      version: 1,
+      onCreate: _onCreate,
+      password: encrypt("kadalTerbang.com"),
+    );
     return db;
   }
 
@@ -83,7 +90,8 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getWatchlistMovies() async {
     final db = await database;
-    final List<Map<String, dynamic>> results = await db!.query(_tblMovieWatchlist);
+    final List<Map<String, dynamic>> results =
+        await db!.query(_tblMovieWatchlist);
 
     return results;
   }

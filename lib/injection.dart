@@ -37,11 +37,19 @@ import 'package:core/presentation/provider/tv/tv_list_notifier.dart';
 import 'package:core/presentation/provider/tv/watchlist_tv_notifier.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:search/bloc/search_bloc.dart';
 import 'package:search/search.dart';
 
 final locator = GetIt.instance;
 
 void init() {
+  // bloc
+  locator.registerFactory(
+    () => SearchBloc(
+      locator(),
+    ),
+  );
+
   // provider
   locator.registerFactory(
     () => MovieListNotifier(
@@ -89,7 +97,7 @@ void init() {
   );
 
   locator.registerFactory(
-        () => TvDetailNotifier(
+    () => TvDetailNotifier(
       getTvDetail: locator(),
       getTvRecommendations: locator(),
       getWatchListStatus: locator(),
@@ -98,22 +106,22 @@ void init() {
     ),
   );
   locator.registerFactory(
-        () => TvSearchNotifier(
+    () => TvSearchNotifier(
       searchTvs: locator(),
     ),
   );
   locator.registerFactory(
-        () => PopularTvsNotifier(
+    () => PopularTvsNotifier(
       locator(),
     ),
   );
   locator.registerFactory(
-        () => TopRatedTvsNotifier(
+    () => TopRatedTvsNotifier(
       getTopRatedTvs: locator(),
     ),
   );
   locator.registerFactory(
-        () => WatchlistTvNotifier(
+    () => WatchlistTvNotifier(
       getWatchlistTvs: locator(),
     ),
   );
@@ -162,7 +170,7 @@ void init() {
     () => TvRemoteDataSourceImpl(client: locator()),
   );
   locator.registerLazySingleton<TvLocalDataSource>(
-      ()=> TvLocalDataSourceImpl( databaseHelper: locator()),
+    () => TvLocalDataSourceImpl(databaseHelper: locator()),
   );
 
   // helper
