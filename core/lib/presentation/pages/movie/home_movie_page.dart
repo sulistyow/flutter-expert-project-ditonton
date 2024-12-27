@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/domain/entities/movie.dart';
-import 'package:core/presentation/pages/movie/popular_movies_page.dart';
-import 'package:core/presentation/pages/movie/top_rated_movies_page.dart';
-import 'package:core/presentation/pages/movie/watchlist_movies_page.dart';
 import 'package:core/presentation/pages/tv/home_tvs_list.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:core/utils/constants.dart';
@@ -25,9 +22,6 @@ class _HomeMoviePageState extends State<HomeMoviePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    context.read<MovieListBloc>().add(FetchNowPlayingMovies());
-    context.read<MovieListBloc>().add(FetchPopularMovies());
-    context.read<MovieListBloc>().add(FetchTopRatedMovies());
   }
 
   @override
@@ -64,7 +58,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
               leading: Icon(Icons.save_alt),
               title: Text('Watchlist'),
               onTap: () {
-                Navigator.pushNamed(context, WatchlistMoviesPage.ROUTE_NAME);
+                Navigator.pushNamed(context, WATCHLIST_MOVIE_ROUTE);
               },
             ),
             ListTile(
@@ -98,96 +92,9 @@ class _HomeMoviePageState extends State<HomeMoviePage>
         ],
       ),
       body: TabBarView(
-        controller: _tabController, // Add this line if missing
-        children: [_movies(), HomeTvsPage()],
+        controller: _tabController,
+        children: [MovieListPage(), HomeTvsPage()],
       ),
-    );
-  }
-
-  Widget _movies() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Now Playing',
-              style: kHeading6,
-            ),
-            BlocBuilder<MovieListBloc, MovieListState>(
-              buildWhen: (context, state) =>
-                  state is! isLoadedPopular && state is! isLoadedTopRated,
-              builder: (context, state) {
-                if (state is isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is isLoadedNowPlaying) {
-                  return MovieList(state.nowPlayingMovies);
-                } else {
-                  return Text('Failed');
-                }
-              },
-            ),
-            _buildSubHeading(
-              title: 'Popular',
-              onTap: () =>
-                  Navigator.pushNamed(context, PopularMoviesPage.ROUTE_NAME),
-            ),
-            BlocBuilder<MovieListBloc, MovieListState>(
-              buildWhen: (context, state) =>
-                  state is! isLoadedNowPlaying && state is! isLoadedTopRated,
-              builder: (context, state) {
-                if (state is isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is isLoadedPopular) {
-                  return MovieList(state.popularMovies);
-                } else {
-                  return Text('Failed');
-                }
-              },
-            ),
-            _buildSubHeading(
-              title: 'Top Rated',
-              onTap: () =>
-                  Navigator.pushNamed(context, TopRatedMoviesPage.ROUTE_NAME),
-            ),
-            BlocBuilder<MovieListBloc, MovieListState>(
-              buildWhen: (context, state) =>
-                  state is! isLoadedPopular && state is! isLoadedNowPlaying,
-              builder: (context, state) {
-                if (state is isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is isLoadedTopRated) {
-                  return MovieList(state.topRatedMovies);
-                } else {
-                  return Text('Failed');
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Row _buildSubHeading({required String title, required Function() onTap}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: kHeading6,
-        ),
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [Text('See More'), Icon(Icons.arrow_forward_ios)],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -230,6 +137,116 @@ class MovieList extends StatelessWidget {
         },
         itemCount: movies.length,
       ),
+    );
+  }
+}
+
+class MovieListPage extends StatefulWidget {
+  const MovieListPage({super.key});
+
+  @override
+  State<MovieListPage> createState() => _MovieListPageState();
+}
+
+class _MovieListPageState extends State<MovieListPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<MovieListBloc>().add(FetchNowPlayingMovies());
+      context.read<MovieListBloc>().add(FetchPopularMovies());
+      context.read<MovieListBloc>().add(FetchTopRatedMovies());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _movies();
+  }
+
+  Widget _movies() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Now Playing',
+              style: kHeading6,
+            ),
+            BlocBuilder<MovieListBloc, MovieListState>(
+              buildWhen: (context, state) =>
+                  !(state is isLoadedPopular) && !(state is isLoadedTopRated),
+              builder: (context, state) {
+                if (state is isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is isLoadedNowPlaying) {
+                  return MovieList(state.nowPlayingMovies);
+                } else {
+                  return Text('Failed');
+                }
+              },
+            ),
+            _buildSubHeading(
+              title: 'Popular',
+              onTap: () => Navigator.pushNamed(context, POPULAR_MOVIES_ROUTE),
+            ),
+            BlocBuilder<MovieListBloc, MovieListState>(
+              buildWhen: (context, state) =>
+                  !(state is isLoadedNowPlaying) &&
+                  !(state is isLoadedTopRated),
+              builder: (context, state) {
+                if (state is isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is isLoadedPopular) {
+                  return MovieList(state.popularMovies);
+                } else {
+                  return Text('Failed');
+                }
+              },
+            ),
+            _buildSubHeading(
+              title: 'Top Rated',
+              onTap: () => Navigator.pushNamed(context, TOP_RATED_ROUTE),
+            ),
+            BlocBuilder<MovieListBloc, MovieListState>(
+              buildWhen: (context, state) =>
+                  state is! isLoadedPopular && state is! isLoadedNowPlaying,
+              builder: (context, state) {
+                if (state is isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is isLoadedTopRated) {
+                  return MovieList(state.topRatedMovies);
+                } else {
+                  return Text('Failed');
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row _buildSubHeading({required String title, required Function() onTap}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: kHeading6,
+        ),
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [Text('See More'), Icon(Icons.arrow_forward_ios)],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

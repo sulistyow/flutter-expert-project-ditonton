@@ -1,7 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:core/presentation/pages/tv/popular_tvs_page.dart';
-import 'package:core/presentation/pages/tv/top_rated_tvs_page.dart';
-import 'package:core/presentation/pages/tv/tv_detail_page.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:core/utils/constants.dart';
 import 'package:core/utils/routes.dart';
@@ -9,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/tv.dart';
-import '../../provider/Tv/Tv_list_bloc.dart';
+import '../../provider/tv/tv_list_bloc.dart';
 
 class HomeTvsPage extends StatefulWidget {
   @override
@@ -51,8 +48,7 @@ class _HomeTvsPageState extends State<HomeTvsPage> {
                 }),
             _buildSubHeading(
               title: 'Popular',
-              onTap: () =>
-                  Navigator.pushNamed(context, POPULAR_TV_ROUTE),
+              onTap: () => Navigator.pushNamed(context, POPULAR_TV_ROUTE),
             ),
             BlocBuilder<TvListBloc, TvListState>(
               buildWhen: (context, state) =>
@@ -70,8 +66,7 @@ class _HomeTvsPageState extends State<HomeTvsPage> {
             ),
             _buildSubHeading(
               title: 'Top Rated',
-              onTap: () =>
-                  Navigator.pushNamed(context, TOP_RATED_TV_ROUTE),
+              onTap: () => Navigator.pushNamed(context, TOP_RATED_TV_ROUTE),
             ),
             BlocBuilder<TvListBloc, TvListState>(
               buildWhen: (context, state) =>

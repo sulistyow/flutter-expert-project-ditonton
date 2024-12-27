@@ -14,6 +14,9 @@ dependencies:
   about:
     path: ../about
 
+  search:
+    path: ../search
+
   http: ^1.2.2
   provider: ^6.1.2
   dartz: ^0.10.1
