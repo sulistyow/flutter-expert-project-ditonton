@@ -697,10 +697,10 @@ class MockTvLocalDataSource extends _i1.Mock implements _i24.TvLocalDataSource {
           as _i7.Future<List<_i18.TvTable>>);
 }
 
-/// A class which mocks [Client].
+/// A class which mocks [BaseClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHttpClient extends _i1.Mock implements _i5.Client {
+class MockHttpClient extends _i1.Mock implements _i5.BaseClient {
   MockHttpClient() {
     _i1.throwOnMissingStub(this);
   }

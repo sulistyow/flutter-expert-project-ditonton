@@ -18,7 +18,6 @@ import 'package:core/domain/usecases/tv/remove_tv_watchlist.dart';
 import 'package:core/domain/usecases/tv/save_tv_watchlist.dart';
 import 'package:core/presentation/provider/movie/movie_detail_bloc.dart';
 import 'package:core/presentation/provider/movie/movie_list_bloc.dart';
-import 'package:core/presentation/provider/movie/movie_search_bloc.dart';
 import 'package:core/presentation/provider/movie/popular_movies_bloc.dart';
 import 'package:core/presentation/provider/movie/top_rated_movies_bloc.dart';
 import 'package:core/presentation/provider/movie/watchlist_movie_bloc.dart';
@@ -30,6 +29,7 @@ import 'package:core/presentation/provider/tv/tv_list_bloc.dart';
 import 'package:core/presentation/provider/tv/watchlist_tv_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:search/bloc/search_bloc.dart';
 import 'package:search/bloc/tv_search_bloc.dart';
 import 'package:search/domain/usecases/search_movies.dart';
 import 'package:search/domain/usecases/search_tvs.dart';
@@ -68,7 +68,7 @@ class BlocProvided extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (_) => MovieSearchBloc(locator<SearchMovies>()),
+          create: (_) => SearchBloc(locator<SearchMovies>()),
         ),
         BlocProvider(
           create: (_) => WatchlistMovieBloc(

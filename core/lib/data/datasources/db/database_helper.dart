@@ -35,7 +35,7 @@ class DatabaseHelper {
       databasePath,
       version: 1,
       onCreate: _onCreate,
-      password: encrypt("kadalTerbang.com"),
+      password: encrypt("kadalTerbang"),
     );
     return db;
   }

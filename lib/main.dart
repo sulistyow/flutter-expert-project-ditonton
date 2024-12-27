@@ -11,7 +11,7 @@ import 'package:core/presentation/pages/tv/tv_detail_page.dart';
 import 'package:core/presentation/pages/tv/watchlist_tvs_page.dart';
 import 'package:core/utils/routes.dart';
 import 'package:core/utils/utils.dart';
-import 'package:ditonton/bloc_provided.dart';
+import 'package:ditonton/bloc_provider.dart';
 import 'package:ditonton/firebase_options.dart';
 import 'package:ditonton/injection.dart' as di;
 import 'package:firebase_analytics/firebase_analytics.dart';

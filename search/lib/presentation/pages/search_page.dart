@@ -2,7 +2,8 @@ import 'package:core/presentation/widgets/movie_card_list.dart';
 import 'package:core/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:search/bloc/search_bloc.dart';
+
+import '../../bloc/search_bloc.dart';
 
 class SearchPage extends StatelessWidget {
   @override
