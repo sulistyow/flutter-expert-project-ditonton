@@ -176,7 +176,7 @@ packages:
     source: hosted
     version: "7.0.1"
   firebase_analytics:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_analytics
       sha256: dbf1e7ab22cfb1f4a4adb103b46a26276b4edc593d4a78ef6fb942bafc92e035
@@ -200,7 +200,7 @@ packages:
     source: hosted
     version: "0.5.7+7"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: "26de145bb9688a90962faec6f838247377b0b0d32cc0abecd9a4e43525fc856c"
@@ -224,7 +224,7 @@ packages:
     source: hosted
     version: "2.19.0"
   firebase_crashlytics:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_crashlytics
       sha256: "9897c01efaa950d2f6da8317d12452749a74dc45f33b46390a14cfe28067f271"

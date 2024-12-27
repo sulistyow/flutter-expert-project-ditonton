@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:core/styles/text_styles.dart';
-import 'package:core/utils/constants.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:core/presentation/pages/tv/popular_tvs_page.dart';
 import 'package:core/presentation/pages/tv/top_rated_tvs_page.dart';
 import 'package:core/presentation/pages/tv/tv_detail_page.dart';
+import 'package:core/styles/text_styles.dart';
+import 'package:core/utils/constants.dart';
+import 'package:core/utils/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/tv.dart';
-import '../../provider/tv/tv_list_notifier.dart';
+import '../../provider/Tv/Tv_list_bloc.dart';
 
 class HomeTvsPage extends StatefulWidget {
   @override
@@ -20,10 +20,9 @@ class _HomeTvsPageState extends State<HomeTvsPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => Provider.of<TvListNotifier>(context, listen: false)
-      ..fetchNowPlayingTvs()
-      ..fetchPopularTvs()
-      ..fetchTopRatedTvs());
+    context.read<TvListBloc>().add(FetchNowPlayingTvs());
+    context.read<TvListBloc>().add(FetchPopularTvs());
+    context.read<TvListBloc>().add(FetchTopRatedTvs());
   }
 
   @override
@@ -38,52 +37,55 @@ class _HomeTvsPageState extends State<HomeTvsPage> {
               'Now Playing',
               style: kHeading6,
             ),
-            Consumer<TvListNotifier>(builder: (context, data, child) {
-              final state = data.nowPlayingState;
-              if (state == RequestState.Loading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state == RequestState.Loaded) {
-                return TvList(data.nowPlayingTvs);
-              } else {
-                return Text('Failed');
-              }
-            }),
+            BlocBuilder<TvListBloc, TvListState>(
+                buildWhen: (context, state) =>
+                    !(state is isLoadedPopular) && !(state is isLoadedTopRated),
+                builder: (context, state) {
+                  if (state is isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is isLoadedNowPlaying) {
+                    return TvList(state.nowPlayingTvs);
+                  } else {
+                    return Text('Failed');
+                  }
+                }),
             _buildSubHeading(
               title: 'Popular',
               onTap: () =>
-                  Navigator.pushNamed(context, PopularTvsPage.ROUTE_NAME),
+                  Navigator.pushNamed(context, POPULAR_TV_ROUTE),
             ),
-            Consumer<TvListNotifier>(builder: (context, data, child) {
-              final state = data.popularTvsState;
-              if (state == RequestState.Loading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state == RequestState.Loaded) {
-                return TvList(data.popularTvs);
-              } else {
-                return Text('Failed');
-              }
-            }),
+            BlocBuilder<TvListBloc, TvListState>(
+              buildWhen: (context, state) =>
+                  !(state is isLoadedNowPlaying) &&
+                  !(state is isLoadedTopRated),
+              builder: (context, state) {
+                if (state is isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is isLoadedPopular) {
+                  return TvList(state.popularTvs);
+                } else {
+                  return Text('Failed');
+                }
+              },
+            ),
             _buildSubHeading(
               title: 'Top Rated',
               onTap: () =>
-                  Navigator.pushNamed(context, TopRatedTvsPage.ROUTE_NAME),
+                  Navigator.pushNamed(context, TOP_RATED_TV_ROUTE),
             ),
-            Consumer<TvListNotifier>(builder: (context, data, child) {
-              final state = data.topRatedTvsState;
-              if (state == RequestState.Loading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state == RequestState.Loaded) {
-                return TvList(data.topRatedTvs);
-              } else {
-                return Text('Failed');
-              }
-            }),
+            BlocBuilder<TvListBloc, TvListState>(
+              buildWhen: (context, state) =>
+                  !(state is isLoadedPopular) && !(state is isLoadedNowPlaying),
+              builder: (context, state) {
+                if (state is isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is isLoadedTopRated) {
+                  return TvList(state.topRatedTvs);
+                } else {
+                  return Text('Failed');
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -131,7 +133,7 @@ class TvList extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  TvDetailPage.ROUTE_NAME,
+                  TV_DETAIL_ROUTE,
                   arguments: tv.id,
                 );
               },

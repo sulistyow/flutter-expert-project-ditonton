@@ -1,9 +1,8 @@
-import 'package:core/utils/state_enum.dart';
 import 'package:core/utils/utils.dart';
-import 'package:core/presentation/provider/tv/watchlist_tv_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../provider/tv/watchlist_tv_bloc.dart';
 import '../../widgets/tv_card_list.dart';
 
 class WatchlistTvsPage extends StatefulWidget {
@@ -17,9 +16,7 @@ class _WatchlistTvsPageState extends State<WatchlistTvsPage> with RouteAware {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<WatchlistTvNotifier>(context, listen: false)
-            .fetchWatchlistTvs());
+    context.read<WatchlistTvBloc>().add(FetchWatchlistTvs());
   }
 
   @override
@@ -29,33 +26,32 @@ class _WatchlistTvsPageState extends State<WatchlistTvsPage> with RouteAware {
   }
 
   void didPopNext() {
-    Provider.of<WatchlistTvNotifier>(context, listen: false)
-        .fetchWatchlistTvs();
+    context.read<WatchlistTvBloc>().add(FetchWatchlistTvs());
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Consumer<WatchlistTvNotifier>(
-        builder: (context, data, child) {
-          if (data.watchlistState == RequestState.Loading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (data.watchlistState == RequestState.Loaded) {
+      child: BlocBuilder<WatchlistTvBloc, WatchlistTvState>(
+        builder: (context, state) {
+          if (state is isLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is isLoaded) {
             return ListView.builder(
               itemBuilder: (context, index) {
-                final tv = data.watchlistTvs[index];
+                final tv = state.watchlistTvs[index];
                 return TvCard(tv);
               },
-              itemCount: data.watchlistTvs.length,
+              itemCount: state.watchlistTvs.length,
             );
-          } else {
+          } else if (state is isError) {
             return Center(
               key: Key('error_message'),
-              child: Text(data.message),
+              child: Text(state.message),
             );
+          } else {
+            return Container();
           }
         },
       ),
