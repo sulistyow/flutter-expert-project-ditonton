@@ -1,16 +1,19 @@
-import 'package:about/about.dart';
-import 'package:core/core.dart';
-import 'package:core/presentation/pages/movie/home_movie_page.dart';
-import 'package:core/presentation/pages/movie/movie_detail_page.dart';
-import 'package:core/presentation/pages/movie/popular_movies_page.dart';
-import 'package:core/presentation/pages/movie/top_rated_movies_page.dart';
-import 'package:core/presentation/pages/movie/watchlist_movies_page.dart';
-import 'package:core/presentation/pages/tv/popular_tvs_page.dart';
-import 'package:core/presentation/pages/tv/top_rated_tvs_page.dart';
-import 'package:core/presentation/pages/tv/tv_detail_page.dart';
-import 'package:core/presentation/pages/tv/watchlist_tvs_page.dart';
-import 'package:core/utils/routes.dart';
-import 'package:core/utils/utils.dart';
+import 'package:ditonton/presentation/pages/movie/search_page.dart';
+import 'package:ditonton/presentation/pages/tv/tv_search_page.dart';
+import 'package:ditonton/styles/colors.dart';
+import 'package:ditonton/styles/text_styles.dart';
+
+import 'package:ditonton/presentation/pages/movie/home_movie_page.dart';
+import 'package:ditonton/presentation/pages/movie/movie_detail_page.dart';
+import 'package:ditonton/presentation/pages/movie/popular_movies_page.dart';
+import 'package:ditonton/presentation/pages/movie/top_rated_movies_page.dart';
+import 'package:ditonton/presentation/pages/movie/watchlist_movies_page.dart';
+import 'package:ditonton/presentation/pages/tv/popular_tvs_page.dart';
+import 'package:ditonton/presentation/pages/tv/top_rated_tvs_page.dart';
+import 'package:ditonton/presentation/pages/tv/tv_detail_page.dart';
+import 'package:ditonton/presentation/pages/tv/watchlist_tvs_page.dart';
+import 'package:ditonton/utils/routes.dart';
+import 'package:ditonton/utils/utils.dart';
 import 'package:ditonton/bloc_provider.dart';
 import 'package:ditonton/firebase_options.dart';
 import 'package:ditonton/injection.dart' as di;
@@ -19,7 +22,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:search/search.dart';
+
+import 'presentation/pages/about_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
