@@ -11,6 +11,7 @@ import '../../../domain/entities/tv.dart';
 import '../../../domain/entities/tv_detail.dart';
 import '../../provider/tv/tv_detail_bloc.dart';
 
+
 class TvDetailPage extends StatefulWidget {
   final int id;
 
