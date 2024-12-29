@@ -1,0 +1,114 @@
+workflows:
+  android-workflow:
+    name: Android Workflow
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    environment:
+      android_signing:
+        - keystore_reference
+      groups:
+        - AIzaSyArBNYEnIdA57rSOaAV9MuTCmsIeMKN6MI # <-- (Includes GCLOUD_SERVICE_ACCOUNT_CREDENTIALS)
+      vars:
+        PACKAGE_NAME: "com.dicoding.ditonton" # <-- Put your package name here
+        GOOGLE_PLAY_TRACK: "alpha"
+      flutter: stable
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Install Dependencies for Core Module
+        script: |
+          echo "Installing dependencies for core module..."
+          cd core
+          flutter pub get
+          cd ..
+
+      # Step 2: Install Dependencies for Search Module
+      - name: Install Dependencies for Search Module
+        script: |
+          echo "Installing dependencies for search module..."
+          cd search
+          flutter pub get
+          cd ..
+      - name: Run Tests for Core Module
+        script: |
+          echo "Running tests for core module..."
+          cd core
+          if [ -d "test" ]; then
+            flutter test --machine --coverage
+          else
+            echo "No test directory found in core module, skipping tests..."
+          fi
+          cd ..
+
+      # Step 4: Run Tests for Search Module
+      - name: Run Tests for Search Module
+        script: |
+          echo "Running tests for search module..."
+          cd search
+          if [ -d "test" ]; then
+            flutter test --machine --coverage
+          else
+            echo "No test directory found in search module, skipping tests..."
+          fi
+          cd ..
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Build AAB with Flutter
+        script: |
+          BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))      
+          flutter build appbundle --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+      - core/test/
+      - search/test/
+      - flutter_drive.log
+    cache:
+      # Cache Flutter dependencies and module builds
+      cache_paths:
+        - ~/.pub-cache
+        - core/build
+        - search/build
+
+  flutter-multi-module-tests:
+    name: Flutter Multi-Module Test Workflow
+    environment:
+      flutter: stable
+      vars:
+        FLUTTER_VERSION: "3.13.0" # Adjust this to match your Flutter version
+    scripts:
+      # Step 1: Install Dependencies for Core Module
+      
+
+      # Step 3: Run Tests for Core Module
+      
+
+      # Optional: Combine Coverage Reports
+      - name: Combine Coverage Reports
+        script: |
+          echo "Combining coverage reports..."
+          if ! command -v lcov &> /dev/null; then
+            echo "lcov is not installed. Installing lcov..."
+            sudo apt-get update
+            sudo apt-get install -y lcov
+          fi
+          lcov --add-tracefile core/coverage/lcov.info --add-tracefile search/coverage/lcov.info --output-file combined_coverage.lcov.info
+          echo "Combined coverage report generated: combined_coverage.lcov.info"
+
+    artifacts:
+      - core/test/
+      - search/test/
+
+    cache:
+      # Cache Flutter dependencies and module builds
+      cache_paths:
+        - ~/.pub-cache
+        - core/build
+        - search/build
